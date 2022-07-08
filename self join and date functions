@@ -1,0 +1,13 @@
+1 Day retention 
+
+
+with x as(select country, customer_uid, order_uid, 
+extract(month from order_date) as month,date(order_date) as day, 
+max(order_date) as maxday, Discount_amount_eur from `Revenue-Data` 
+where extract(month from order_date) = 6 and extract(year from order_date) = 2022 
+and first_order is true group by 1,2,3,order_date,Discount_Amount_EUR)
+select x.country, count(distinct x.customer_uid) as count 
+from x join `adroit-braid-289615.app_data.Revenue-Data` rd on x.country=rd.country 
+and x.customer_uid = rd.Customer_Uid 
+and date(rd.order_date) = x.day +1 
+group by 1
